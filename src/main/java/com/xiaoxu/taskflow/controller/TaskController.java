@@ -3,6 +3,8 @@ package com.xiaoxu.taskflow.controller;
 import com.xiaoxu.taskflow.entity.Task;
 import com.xiaoxu.taskflow.service.TaskService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import com.xiaoxu.taskflow.dto.*;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class TaskController {
 
     // GET /api/tasks
     @GetMapping
-    public List<Task> getTasks() {
+    public List<TaskResponseDTO> getTasks() {
         return service.getAllTasks();
     }
 
@@ -30,8 +32,8 @@ public class TaskController {
 
     // POST /api/tasks
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return service.createTask(task);
+    public TaskResponseDTO createTask(@Valid @RequestBody TaskRequestDTO dto) {
+        return service.createTask(dto);
     }
 
     // PUT update
