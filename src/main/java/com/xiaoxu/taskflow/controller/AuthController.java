@@ -2,34 +2,43 @@ package com.xiaoxu.taskflow.controller;
 
 import com.xiaoxu.taskflow.dto.AuthResponse;
 import com.xiaoxu.taskflow.dto.LoginRequest;
-import com.xiaoxu.taskflow.security.JwtService;
+import com.xiaoxu.taskflow.dto.RegisterRequest;
+import com.xiaoxu.taskflow.response.ApiResponse;
+import com.xiaoxu.taskflow.service.AuthService;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final JwtService jwtService;
 
-    public AuthController(JwtService jwtService) {
-        this.jwtService = jwtService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
+
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public ApiResponse<AuthResponse> login(@RequestBody LoginRequest request) {
 
-        // temporary fake login
-        // later we connect database
+        AuthResponse response = authService.login(request);
 
-        if ("admin".equals(request.getUsername())
-                && "1234".equals(request.getPassword())) {
+        return new ApiResponse<>(
+                true,
+                "Login successful",
+                response
+        );
+    }
 
-            String token =
-                    jwtService.generateToken(request.getUsername());
-
-            return new AuthResponse(token);
-        }
-
-        throw new RuntimeException("Invalid username or password");
+    @PostMapping("/register")
+    public ApiResponse<Void> register(@RequestBody RegisterRequest request) {
+        authService.register(request);
+        return new ApiResponse<>(
+                true,
+                "User registered successfully",
+                null
+        );
     }
 }

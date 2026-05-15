@@ -1,5 +1,6 @@
 package com.xiaoxu.taskflow.security;
 
+import com.xiaoxu.taskflow.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +20,7 @@ public class JwtService {
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     // generate token
-    public String generateToken(String username) {
+    public String generateToken(String username, Role role) {
 
         return Jwts.builder()
                 .setSubject(username)
@@ -27,6 +28,7 @@ public class JwtService {
                 .setExpiration(
                         new Date(System.currentTimeMillis() + 1000 * 60 * 60)
                 )
+                .claim("role", role.name())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -35,6 +37,18 @@ public class JwtService {
     public String extractUsername(String token) {
 
         return getClaims(token).getSubject();
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     // validate token
