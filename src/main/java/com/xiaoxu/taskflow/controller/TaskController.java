@@ -3,9 +3,12 @@ package com.xiaoxu.taskflow.controller;
 import com.xiaoxu.taskflow.entity.Task;
 import com.xiaoxu.taskflow.response.ApiResponse;
 import com.xiaoxu.taskflow.service.TaskService;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import com.xiaoxu.taskflow.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,10 +24,12 @@ public class TaskController {
 
     // GET /api/tasks
     @GetMapping
-    public ApiResponse<List<TaskResponseDTO>> getTasks() {
+    public ApiResponse<Page<TaskResponseDTO>> getTasks(
+            @PageableDefault(size = 5, sort = "title")
+            Pageable pageable) {
 
-        List<TaskResponseDTO> tasks =
-                service.getAllTasks();
+        Page<TaskResponseDTO> tasks =
+                service.getAllTasks(pageable);
 
         return new ApiResponse<>(
                 true,

@@ -1,10 +1,17 @@
 package com.xiaoxu.taskflow.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,5 +69,29 @@ public class GlobalExceptionHandler {
                 error,
                 HttpStatus.FORBIDDEN
         );
+    }
+
+    @Component
+    public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
+
+        @Override
+        public void commence(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                AuthenticationException authException
+        ) throws IOException {
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            response.getWriter().write(
+                    """
+                    {
+                      "status": 401,
+                      "message": "Unauthorized - invalid or missing token"
+                    }
+                    """
+            );
+        }
     }
 }

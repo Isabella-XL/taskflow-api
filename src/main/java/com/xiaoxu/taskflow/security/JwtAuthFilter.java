@@ -1,5 +1,6 @@
 package com.xiaoxu.taskflow.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+try {
         String token =
                 authHeader.substring(7);
 
@@ -76,6 +77,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext()
                     .setAuthentication(authToken);
         }
+} catch (ExpiredJwtException e) {
+
+    System.out.println("JWT expired");
+
+} catch (Exception e) {
+
+    System.out.println("JWT invalid");
+
+}
 
         filterChain.doFilter(request, response);
     }

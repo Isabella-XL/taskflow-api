@@ -4,12 +4,15 @@ import com.xiaoxu.taskflow.entity.*;
 import com.xiaoxu.taskflow.exception.ResourceNotFoundException;
 import com.xiaoxu.taskflow.repository.TaskRepository;
 import com.xiaoxu.taskflow.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import com.xiaoxu.taskflow.dto.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,24 +51,36 @@ public class TaskService {
 
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public List<TaskResponseDTO> getAllTasks() {
+    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
 
         User user = getCurrentUser();
 
-        if (user.getRole() == Role.ADMIN) {
-            return repository.findAll()
-                    .stream()
-                    .map(this::convertToDTO)
-                    .toList();
+        List<String> allowedFields = List.of("id", "title", "status", "createdAt");
+
+        // ✅ 1. validate sort first
+        Sort sort = pageable.getSort();
+
+        boolean invalidSort = sort.stream()
+                .anyMatch(order -> !allowedFields.contains(order.getProperty()));
+
+        if (invalidSort || sort.isUnsorted()) {
+            pageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    Sort.by("id")
+            );
         }
 
-        return repository.findByUser(user)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+        // ✅ 2. business logic
+        Page<Task> tasks;
 
+        if (user.getRole() == Role.ADMIN) {
+            tasks = repository.findAll(pageable);
+        } else {
+            tasks = repository.findByUser(user, pageable);
+        }
 
-
+        return tasks.map(this::convertToDTO);
     }
 
     // Create a task

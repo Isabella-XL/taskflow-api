@@ -2,9 +2,14 @@ package com.xiaoxu.taskflow.controller;
 
 import com.xiaoxu.taskflow.dto.AuthResponse;
 import com.xiaoxu.taskflow.dto.LoginRequest;
+import com.xiaoxu.taskflow.dto.RefreshTokenRequest;
 import com.xiaoxu.taskflow.dto.RegisterRequest;
+import com.xiaoxu.taskflow.entity.RefreshToken;
+import com.xiaoxu.taskflow.entity.User;
 import com.xiaoxu.taskflow.response.ApiResponse;
+import com.xiaoxu.taskflow.security.JwtService;
 import com.xiaoxu.taskflow.service.AuthService;
+import com.xiaoxu.taskflow.service.RefreshTokenService;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,9 +19,16 @@ public class AuthController {
 
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthController(AuthService authService) {
+    private final JwtService jwtService;
+    public AuthController(AuthService authService,
+                          RefreshTokenService refreshTokenService,
+                          JwtService jwtService) {
+
         this.authService = authService;
+        this.refreshTokenService = refreshTokenService;
+        this.jwtService = jwtService;
     }
 
 
@@ -39,6 +51,29 @@ public class AuthController {
                 true,
                 "User registered successfully",
                 null
+        );
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponse refreshToken(
+            @RequestBody RefreshTokenRequest request
+    ) {
+
+        RefreshToken refreshToken =
+                refreshTokenService.verifyExpiration(
+                        request.getRefreshToken()
+                );
+
+        User user = refreshToken.getUser();
+
+        String accessToken = jwtService.generateToken(
+                user.getUsername(),
+                user.getRole()
+        );
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken.getToken()
         );
     }
 }

@@ -3,6 +3,7 @@ package com.xiaoxu.taskflow.service;
 import com.xiaoxu.taskflow.dto.AuthResponse;
 import com.xiaoxu.taskflow.dto.LoginRequest;
 import com.xiaoxu.taskflow.dto.RegisterRequest;
+import com.xiaoxu.taskflow.entity.RefreshToken;
 import com.xiaoxu.taskflow.entity.Role;
 import com.xiaoxu.taskflow.entity.User;
 import com.xiaoxu.taskflow.exception.ResourceNotFoundException;
@@ -19,12 +20,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, JwtService jwtService) {
+                       PasswordEncoder passwordEncoder, JwtService jwtService,  RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public void register(RegisterRequest request) {
@@ -46,8 +49,15 @@ public class AuthService {
             throw new ResourceNotFoundException("Invalid password");
         }
 
-        String token = jwtService.generateToken(user.getUsername(), user.getRole() );
+        String accessToken = jwtService.generateToken(user.getUsername(), user.getRole() );
 
-        return new AuthResponse(token);
+        RefreshToken refreshToken =
+                refreshTokenService
+                        .createRefreshToken(user);
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken.getToken()
+        );
     }
 }
