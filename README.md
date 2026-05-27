@@ -1,55 +1,106 @@
 # TaskFlow API
 
-TaskFlow is a Spring Boot backend application that provides secure task management APIs with JWT authentication, role-based authorization, PostgreSQL integration, and clean layered architecture.
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-black)
+![Render](https://img.shields.io/badge/Render-Deployed-7f52ff)
+
+Production-ready task management REST API built with Spring Boot, featuring JWT authentication, RBAC authorization, PostgreSQL persistence, Docker containerization, and CI/CD deployment on Render.
 
 ---
+## Live Demo
 
-# 🚀 Tech Stack
+API Base URL:
+https://taskflow-api-opdf.onrender.com/  
+---
+## API Documentation
 
-- Java 21
-- Spring Boot
-- Spring Security
-- JWT (JSON Web Token)
-- PostgreSQL
-- Spring Data JPA / Hibernate
-- Maven
-- Swagger / OpenAPI
+Swagger UI:  
+https://taskflow-api-opdf.onrender.com/swagger-ui/index.html
 
 ---
+## Project Overview
 
-# 🔐 Features
+TaskFlow API is a secure backend application for task management.
 
-## Authentication & Security
-- JWT-based authentication
-- Secure REST APIs
-- Password encryption with BCrypt
-- Stateless authentication flow
+The system supports:
+- JWT authentication
+- Role-based authorization
+- Task ownership protection
+- CRUD task operations
+- Admin-level access control
+- RESTful API architecture
 
-## Authorization
+---
+## Features
+
+### Authentication & Security
+- JWT-based stateless authentication
+- BCrypt password encryption
+- Secure REST API endpoints
+- Spring Security integration
+
+### Authorization
 - Role-Based Access Control (RBAC)
 - USER and ADMIN roles
-- Task ownership protection
-- Method-level security with `@PreAuthorize`
+- Task ownership validation
+- Method-level security with @PreAuthorize
 
-## Task Management
-- Create tasks
-- Update tasks
-- Delete tasks
-- View personal tasks
+### Task Management
+- Create, update, delete tasks
+- Retrieve personal tasks
 - Admin access to all tasks
 
-## API Architecture
-- DTO-based request/response design
+### API Design
+- DTO-based architecture
 - Global exception handling
-- Standardized API response wrapper
-- Validation with `@Valid`
-- Layered architecture:
-  Controller → Service → Repository
-
-## Documentation
-- Swagger/OpenAPI integration
+- Validation with @Valid
+- Standardized API responses
 
 ---
+## Security Features
+
+- Stateless JWT authentication
+- Role-based access control (RBAC)
+- BCrypt password hashing
+- Endpoint authorization
+- Ownership-based resource protection
+- Secure token validation
+
+---
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Java 21 | Core language |
+| Spring Boot | Backend framework |
+| Spring Security | Authentication & authorization |
+| JWT | Stateless authentication |
+| PostgreSQL | Relational database |
+| Hibernate / JPA | ORM |
+| Maven | Build tool |
+| Swagger/OpenAPI | API documentation |
+| Docker | Containerization |
+| GitHub Actions | CI/CD automation |
+| Render | Cloud deployment |
+
+---
+
+## Architecture
+
+The project follows a clean layered architecture:
+
+Controller → Service → Repository → Database
+
+### Security Flow
+
+JWT Token → JwtFilter → SecurityContextHolder → Authorization
+
+---
+
+
 
 # 📦 API Endpoints
 
@@ -59,6 +110,7 @@ TaskFlow is a Spring Boot backend application that provides secure task manageme
 |---|---|---|
 | POST | `/auth/register` | Register new user |
 | POST | `/auth/login` | Login and receive JWT token |
+| POST | `/auth/refresh` | Refresh access token |
 
 ---
 
@@ -73,6 +125,32 @@ TaskFlow is a Spring Boot backend application that provides secure task manageme
 | DELETE | `/api/tasks/{id}` | Delete task |
 
 ---
+## System
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | API information endpoint |
+| GET | `/health` | Health check endpoint |
+
+- The root endpoint provides basic API information and service status.
+- The `/health` endpoint is used for deployment monitoring and uptime checks.
+---
+# 🔑 Authentication Flow
+
+1. Register or login
+2. Receive JWT token
+3. Add token to Authorization header: Bearer <your-token>
+4. Access secured endpoints
+
+---
+## Screenshots
+
+### Swagger UI
+
+![Swagger UI](screenshots/swagger-ui.png)
+
+---
+
 
 # 👥 Roles
 
@@ -85,47 +163,94 @@ TaskFlow is a Spring Boot backend application that provides secure task manageme
 
 ---
 
-# 🔑 Authentication Flow
 
-1. Register or login
-2. Receive JWT token
-3. Add token to Authorization header: Bearer <your-token>
-4. Access secured endpoints
+## 🧪 Running Locally
 
----
+### 1. Clone Repository
 
-# 🏗️ Project Architecture
+```bash
+git clone <repo-url>
+cd taskflow-api
+```
 
-## Application Layer Flow
+### 2. Setup PostgreSQL Database
 
-Controller → Service → Repository → Database
+```sql
+CREATE DATABASE taskflow;
+```
 
-## Security Flow
+### 3. Configure Environment
 
-JWT Token → JwtFilter → SecurityContextHolder → Authorization
+Update `application.properties`:
 
----
-
-## 🧪 How to Run
-
-### 1. Setup database
-Create PostgreSQL database: taskflow
-### 2. Configure application.properties
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/taskflow
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
+```
 
-### 3. Run project 
+### 4. Run the Application
+
+```bash
 mvn spring-boot:run
+```
 
----
-## Swagger UI
+### 5. Access Swagger UI
 
 http://localhost:8080/swagger-ui/index.html
 
+
 ---
 
+## Docker Support
 
+The application is fully containerized using Docker and Docker Compose.
+
+### Run with Docker
+```bash
+docker-compose up --build
+```
+### Services
+- Spring Boot API
+- PostgreSQL database
+### Docker Features
+- Multi-container setup
+- Environment variable support
+- Persistent PostgreSQL storage
+- Production-ready configuration
+
+---
+
+## CI/CD Pipeline
+
+The project includes a CI/CD pipeline using GitHub Actions.
+
+Pipeline features:
+- Automated Maven build
+- Dependency installation
+- Project packaging
+- Docker image build
+- Deployment-ready workflow
+
+---
+
+## Deployment
+
+The application is deployed on Render using automatic deployment from GitHub.
+
+### Deployment Features
+
+- Automatic deploy on push
+- Cloud-hosted PostgreSQL
+- Environment variable management
+- Continuous delivery workflow
+
+### Production Stack
+
+Client → Render → Spring Boot API → PostgreSQL
+
+
+---
 ## 📌 Project Status
 
 ### Completed
@@ -137,15 +262,25 @@ http://localhost:8080/swagger-ui/index.html
 - Validation
 - Global exception handling
 - Ownership authorization
-### Planned Improvements
 - Pagination & sorting
 - Refresh token system
 - Docker deployment
-- Unit & integration testing
 - CI/CD pipeline
+
+
+### Planned Improvements
+
+- Unit & integration testing
+- Redis caching
+- API rate limiting
+- Structured logging & monitoring
+- Kubernetes deployment
+- Email verification
+- API versioning
+
 ---
 
 ## 👨‍💻 Author
 
 Xiaoxu  
-Spring Boot Software Developer
+Software Developer
