@@ -10,17 +10,21 @@
 Production-ready task management REST API built with Spring Boot, featuring JWT authentication, RBAC authorization, PostgreSQL persistence, Docker containerization, and CI/CD deployment on Render.
 
 ---
+
 ## Live Demo
 
 API Base URL:
 https://taskflow-api-opdf.onrender.com/  
+
 ---
+
 ## API Documentation
 
 Swagger UI:  
 https://taskflow-api-opdf.onrender.com/swagger-ui/index.html
 
 ---
+
 ## Project Overview
 
 TaskFlow API is a secure backend application for task management.
@@ -34,6 +38,7 @@ The system supports:
 - RESTful API architecture
 
 ---
+
 ## Features
 
 ### Authentication & Security
@@ -60,6 +65,7 @@ The system supports:
 - Standardized API responses
 
 ---
+
 ## Security Features
 
 - Stateless JWT authentication
@@ -70,6 +76,7 @@ The system supports:
 - Secure token validation
 
 ---
+
 ## Tech Stack
 
 | Technology | Purpose |
@@ -125,6 +132,7 @@ JWT Token → JwtFilter → SecurityContextHolder → Authorization
 | DELETE | `/api/tasks/{id}` | Delete task |
 
 ---
+
 ## System
 
 | Method | Endpoint | Description |
@@ -134,7 +142,9 @@ JWT Token → JwtFilter → SecurityContextHolder → Authorization
 
 - The root endpoint provides basic API information and service status.
 - The `/health` endpoint is used for deployment monitoring and uptime checks.
+
 ---
+
 # 🔑 Authentication Flow
 
 1. Register or login
@@ -143,6 +153,7 @@ JWT Token → JwtFilter → SecurityContextHolder → Authorization
 4. Access secured endpoints
 
 ---
+
 ## Screenshots
 
 ### Swagger UI
