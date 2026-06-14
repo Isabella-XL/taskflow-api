@@ -71,6 +71,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(
+            IllegalArgumentException ex) {
+
+        ApiError error = new ApiError(
+                400,
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .badRequest()
+                .body(error);
+    }
+
     @Component
     public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 

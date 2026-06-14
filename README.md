@@ -2,11 +2,11 @@
 
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-green)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-black)
 ![Render](https://img.shields.io/badge/Render-Deployed-7f52ff)
-
+![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)
 Production-ready task management REST API built with Spring Boot, featuring JWT authentication, RBAC authorization, PostgreSQL persistence, Docker containerization, and CI/CD deployment on Render.
 
 ---
@@ -20,8 +20,8 @@ https://taskflow-api-opdf.onrender.com/
 
 ## API Documentation
 
-Swagger UI:  
-https://taskflow-api-opdf.onrender.com/swagger-ui/index.html
+- [API Documentation](https://taskflow-api-opdf.onrender.com/swagger-ui/index.html)
+- [System Design Document](DESIGN.md)
 
 ---
 
@@ -88,9 +88,13 @@ The system supports:
 | PostgreSQL | Relational database |
 | Hibernate / JPA | ORM |
 | Maven | Build tool |
-| Swagger/OpenAPI | API documentation |
+| Jakarta Bean Validation | Input validation |
+| JUnit 5 | Testing framework |
+| Mockito | Mocking for unit tests |
+| Spring Boot Test | Integration & web layer testing |
+| Swagger / OpenAPI | API documentation |
 | Docker | Containerization |
-| GitHub Actions | CI/CD automation |
+| GitHub Actions | CI/CD pipeline |
 | Render | Cloud deployment |
 
 ---
@@ -106,6 +110,33 @@ Controller → Service → Repository → Database
 JWT Token → JwtFilter → SecurityContextHolder → Authorization
 
 ---
+## 🧪 Testing Strategy
+
+This project includes a full test suite covering all application layers:
+
+### Unit Tests
+- AuthServiceTest
+- TaskServiceTest
+
+### Controller Tests (Web Layer)
+- AuthControllerTest
+- TaskControllerTest
+
+### Integration Tests
+- AuthIntegrationTest
+- TaskIntegrationTest
+
+### Coverage Goals
+- Service layer business logic validation
+- REST endpoint correctness
+- Security (JWT + RBAC) enforcement
+- End-to-end authentication flow
+
+### Run Tests
+
+```bash
+mvn test
+```
 
 
 
@@ -275,13 +306,15 @@ Client → Render → Spring Boot API → PostgreSQL
 - Ownership authorization
 - Pagination & sorting
 - Refresh token system
+- Unit testing
+- Controller testing
+- Integration testing
 - Docker deployment
 - CI/CD pipeline
 
 
 ### Planned Improvements
 
-- Unit & integration testing
 - Redis caching
 - API rate limiting
 - Structured logging & monitoring

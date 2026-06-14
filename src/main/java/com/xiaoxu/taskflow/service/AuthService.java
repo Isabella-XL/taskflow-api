@@ -11,8 +11,6 @@ import com.xiaoxu.taskflow.repository.UserRepository;
 import com.xiaoxu.taskflow.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class AuthService {
@@ -32,6 +30,9 @@ public class AuthService {
 
     public void register(RegisterRequest request) {
 
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -43,10 +44,10 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid username or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResourceNotFoundException("Invalid password");
+            throw new ResourceNotFoundException("Invalid username or password");
         }
 
         String accessToken = jwtService.generateToken(user.getUsername(), user.getRole() );
